@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "server": "node --experimental-modules ./src"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "mysql": "^2.15.0",
+    "socket.io": "^2.1.0"
+  },
+  "name": "sql-counter",
+  "version": "1.0.0",
+  "description": "Simple web server that shows a count based on the provided sql",
+  "main": "index.js",
+  "devDependencies": {},
+  "author": "jackchuka",
+  "license": "MIT"
+}

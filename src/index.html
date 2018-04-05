@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Counter</title>
+  <link href="https://fonts.googleapis.com/css?family=Nunito+Sans" rel="stylesheet">
+  <style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #4B51EF;
+    font-family: 'Nunito Sans', sans-serif;
+  }
+  .counter {
+    height: 100vh;
+    line-height: 100vh;
+    text-align: center;
+  }
+  .counter > span {
+    color: white;
+    font-weight: bold;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="counter">
+      <span></span>
+    </div>
+  </div>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script>
+    var socket = io('');
+    var $this = $('.counter span')
+    $this.text('0,000,000').animate({fontSize: "12vw"}, 300);
+    socket.on('count_update', function(data) {
+      console.log(data);
+      var $this = $('.counter span')
+      $this.text(data.toLocaleString());
+      $this.animate({fontSize: "16vw"}, 300).animate({fontSize: "12vw"}, 100);
+    });
+  </script>
+</body>
+
+</html>
