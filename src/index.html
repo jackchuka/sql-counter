@@ -34,8 +34,6 @@
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script>
     var socket = io('');
-    var $this = $('.counter span')
-    $this.text('0,000,000').animate({fontSize: "12vw"}, 300);
     socket.on('count_update', function(data) {
       console.log(data);
       var $this = $('.counter span')

@@ -19,15 +19,22 @@ server.listen(3000, () => {
   console.log('Server listening on port 3000...');
 });
 
+let count = '0,000,000';
+
+io.sockets.on('connection', function(socket) {
+  console.log('user connected....');
+  socket.emit('count_update', count);
+});
+
 const load = () => {
-    pool.getConnection((err, con) => {
+  pool.getConnection((err, con) => {
     if (err) {
       con.release();
       return;
     }
     con.query(query, (err, rows) => {
       if (rows.length > 0) {
-        const count = rows[0].count;
+        count = rows[0].count;
         console.log(count);
         io.emit('count_update', count);
       }
@@ -39,6 +46,6 @@ const load = () => {
       return;
     });
   });
-}
+};
 
 setInterval(load, interval);
