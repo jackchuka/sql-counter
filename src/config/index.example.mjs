@@ -1,4 +1,4 @@
-export const config = {
+export const db_config = {
   host: 'localhost',
   user: 'user',
   password: 'password',
@@ -6,5 +6,9 @@ export const config = {
   database: 'yourdb',
 };
 
-export const query = "SELECT count(1) AS count FROM items LIMIT 1";
-export const interval = 30000;
+export const queries = {
+  initial: "SELECT count(1) AS count FROM items WHERE created < DATE(NOW())",
+  additional: "SELECT count(1) AS count FROM items WHERE created >= DATE(NOW())",
+}
+
+export const interval = 10000;

@@ -1,10 +1,10 @@
 import mysql from 'mysql';
-import { config } from './config';
+import { db_config } from './config';
 
 export const pool = mysql.createPool({
-  host: config.host,
-  user: config.user,
-  password: config.password,
-  port: config.port,
-  database: config.database,
+  host: db_config.host,
+  user: db_config.user,
+  password: db_config.password,
+  port: db_config.port,
+  database: db_config.database,
 });

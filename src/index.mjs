@@ -2,7 +2,7 @@ import http from 'http';
 import express from 'express';
 import { pool } from './mysql';
 import socket from 'socket.io';
-import { query, interval } from './config';
+import { queries, interval } from './config';
 
 const app = express();
 const server = http.Server(app);
@@ -19,11 +19,25 @@ server.listen(3000, () => {
   console.log('Server listening on port 3000...');
 });
 
-let count = '0,000,000';
+let count = 0;
 
 io.sockets.on('connection', function(socket) {
   console.log('user connected....');
   socket.emit('count_update', count);
+});
+
+const loadInital = new Promise((resolve, reject) => {
+  pool.getConnection((err, con) => {
+    con.query(queries.initial, (err, rows) => {
+      if (rows.length > 0) {
+        count = rows[0].count;
+        console.log('initial query done...', count);
+        io.emit('count_update', count);
+      }
+      con.release();
+      resolve(count);
+    });
+  });
 });
 
 const load = () => {
@@ -32,10 +46,11 @@ const load = () => {
       con.release();
       return;
     }
-    con.query(query, (err, rows) => {
+    con.query(queries.additional, (err, rows) => {
       if (rows.length > 0) {
-        count = rows[0].count;
-        console.log(count);
+        const addition = rows[0].count;
+        console.log('fetched...', addition);
+        count += addition;
         io.emit('count_update', count);
       }
       con.release();
@@ -48,4 +63,6 @@ const load = () => {
   });
 };
 
-setInterval(load, interval);
+loadInital.then(() => {
+  setInterval(load, interval);
+});
