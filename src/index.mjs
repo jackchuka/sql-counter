@@ -19,23 +19,23 @@ server.listen(3000, () => {
   console.log('Server listening on port 3000...');
 });
 
-let count = 0;
+let initial = 0;
 
 io.sockets.on('connection', function(socket) {
   console.log('user connected....');
-  socket.emit('count_update', count);
+  socket.emit('count_update', initial);
 });
 
 const loadInital = new Promise((resolve, reject) => {
   pool.getConnection((err, con) => {
     con.query(queries.initial, (err, rows) => {
       if (rows.length > 0) {
-        count = rows[0].count;
-        console.log('initial query done...', count);
-        io.emit('count_update', count);
+        initial = rows[0].count;
+        console.log('initial query done...', initial);
+        io.emit('count_update', initial);
       }
       con.release();
-      resolve(count);
+      resolve(initial);
     });
   });
 });
@@ -48,10 +48,10 @@ const load = () => {
     }
     con.query(queries.additional, (err, rows) => {
       if (rows.length > 0) {
-        const addition = rows[0].count;
-        console.log('fetched...', addition);
-        count += addition;
-        io.emit('count_update', count);
+        let addition = rows[0].count;
+        let total = initial + rows[0].count;
+        console.log('fetched addition...', addition, 'sum:', total);
+        io.emit('count_update', total);
       }
       con.release();
     });
