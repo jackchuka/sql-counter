@@ -30,18 +30,27 @@
     </div>
   </div>
 
-  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="public/index.js"></script>
   <script>
     var socket = io();
     socket.on('count_update', function(data) {
       console.log(data);
       var $this = $('.counter span')
       $this.text(data.toLocaleString());
-      $this.animate({fontSize: "16vw"}, 300).animate({fontSize: "12vw"}, 100);
+      $this.animate({
+        fontSize: "16vw"
+      }, 300).animate({
+        fontSize: "12vw"
+      }, 100);
     });
     socket.on('threshold_reached', function() {
       console.log('yay');
+      for (let i = 0; i < 4; i++) {
+        fireworks();
+      }
     });
   </script>
 </body>

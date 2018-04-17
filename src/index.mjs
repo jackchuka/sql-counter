@@ -15,6 +15,8 @@ const io = socket(server);
 const filename = typeof __filename !== 'undefined' ? __filename : (/^ +at (?:file:\/*(?=\/)|)(.*?):\d+:\d+$/m.exec(Error().stack) || '')[1];
 const dirname = typeof __dirname !== 'undefined' ? __dirname : filename.replace(/[\/\\][^\/\\]*?$/, '');
 
+app.use('/public', express.static(dirname + '/public'));
+
 app.get('/', (req, res) => {
   res.sendFile(dirname + '/index.html');
 });
