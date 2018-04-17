@@ -11,4 +11,6 @@ export const queries = {
   additional: "SELECT count(1) AS count FROM items WHERE created >= DATE(NOW())",
 }
 
+export const threshold = 10000000;
+
 export const interval = 10000;

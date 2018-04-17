@@ -2,7 +2,11 @@ import http from 'http';
 import express from 'express';
 import { pool } from './mysql';
 import socket from 'socket.io';
-import { queries, interval } from './config';
+import {
+  queries,
+  interval,
+  threshold,
+} from './config';
 
 const app = express();
 const server = http.Server(app);
@@ -20,6 +24,7 @@ server.listen(3000, () => {
 });
 
 let initial = 0;
+let reached = false;
 
 io.sockets.on('connection', function(socket) {
   console.log('user connected....');
@@ -35,6 +40,7 @@ const loadInital = new Promise((resolve, reject) => {
         io.emit('count_update', initial);
       }
       con.release();
+      checkThreshold(initial);
       resolve(initial);
     });
   });
@@ -46,12 +52,14 @@ const load = () => {
       con.release();
       return;
     }
+
     con.query(queries.additional, (err, rows) => {
       if (rows.length > 0) {
         let addition = rows[0].count;
         let total = initial + rows[0].count;
         console.log('fetched addition...', addition, 'sum:', total);
         io.emit('count_update', total);
+        checkThreshold(total);
       }
       con.release();
     });
@@ -62,6 +70,14 @@ const load = () => {
     });
   });
 };
+
+const checkThreshold = (count) => {
+  if (!reached && threshold <= count) {
+    console.log('reached threshold...', count);
+    io.emit('threshold_reached');
+    reached = true;
+  }
+}
 
 loadInital.then(() => {
   setInterval(load, interval);
